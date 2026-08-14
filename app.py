@@ -5,13 +5,6 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-import streamlit as st
-import pandas as pd
-import numpy as np
-import datetime
-import json
-import plotly.express as px
-import plotly.graph_objects as go
 
 # ----------------------
 # APP CONFIG & PAGE SETUP
@@ -130,25 +123,6 @@ st.markdown("""
         background: rgba(30, 41, 59, 0.85);
     }
     
-    .card-icon {
-        font-size: 2.2rem;
-        margin-bottom: 0.75rem;
-    }
-    
-    .card-title {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #F8FAFC;
-        margin-bottom: 0.5rem;
-    }
-    
-    .card-desc {
-        color: #94A3B8;
-        font-size: 0.92rem;
-        line-height: 1.5;
-        margin-bottom: 1rem;
-    }
-    
     .badge {
         display: inline-block;
         padding: 4px 10px;
@@ -183,21 +157,6 @@ st.markdown("""
         letter-spacing: 0.05em;
         margin-top: 4px;
     }
-    
-    /* Custom Streamlit Sliders & Inputs */
-    .stSlider > div > div > div {
-        background-color: #6366F1 !important;
-    }
-    
-    /* Footer Styling */
-    .dev-footer {
-        margin-top: 3rem;
-        padding: 1.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        text-align: center;
-        color: #94A3B8;
-        font-size: 0.95rem;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -228,12 +187,11 @@ TRACKS = {
     ]
 }
 
-# Maximum potential scores for normalized match percentage computation
 MAX_TRACK_SCORES = {
-    "Data Science / ML": 35,      # Q1*2(10) + Q4*2(10) + Q6*2(10) + Q8*1(5) = 35
-    "Web Development": 30,        # Q2*2(10) + Q6*1(5) + Q7*2(10) + Q8*1(5) = 30
-    "App Development": 15,        # Q3*2(10) + Q8*1(5) = 15
-    "AI / Computer Vision": 25    # Q1*1(5) + Q5*2(10) + Q6*1(5) + Q8*1(5) = 25
+    "Data Science / ML": 35,
+    "Web Development": 30,
+    "App Development": 15,
+    "AI / Computer Vision": 25
 }
 
 TRACK_METADATA = {
@@ -243,7 +201,7 @@ TRACK_METADATA = {
         "description": "Data Scientists analyze complex datasets using mathematical models, statistical inference, and machine learning techniques to automate decision making.",
         "key_skills": ["Python", "Pandas & NumPy", "Scikit-Learn", "SQL & Relational DBs", "Statistics & Probability", "Matplotlib / Seaborn"],
         "top_roles": ["Data Scientist", "Machine Learning Engineer", "Data Analyst", "Analytics Engineer"],
-        "demand_index": "Wow Very High (94%)",
+        "demand_index": "Very High (94%)",
         "avg_salary": "$115,000 - $160,000 / yr",
         "sample_projects": [
             "Customer Churn Prediction Model",
@@ -258,7 +216,7 @@ TRACK_METADATA = {
         "description": "Web Developers construct responsive frontend interfaces, RESTful APIs, and scalable back-end server infrastructure for modern web apps.",
         "key_skills": ["HTML5 / CSS3", "JavaScript & TypeScript", "React / Next.js", "Node.js / Express or Django", "REST & GraphQL APIs", "Git & CI/CD"],
         "top_roles": ["Frontend Developer", "Full Stack Engineer", "Backend Developer", "UI/UX Web Engineer"],
-        "demand_index": "⚡ High (90%)",
+        "demand_index": "High (90%)",
         "avg_salary": "$95,000 - $145,000 / yr",
         "sample_projects": [
             "Full-Stack E-commerce Marketplace",
@@ -271,9 +229,9 @@ TRACK_METADATA = {
         "icon": "📱",
         "tagline": "Create sleek, high-performance mobile apps for iOS and Android.",
         "description": "Mobile App Developers craft native or cross-platform mobile experiences with fluid touch interactions, device API integrations, and offline capabilities.",
-        "key_skills": ["Flutter & Dart", "React Native", "Kotlin (Android) / Swift (iOS)", "Mobile UI/UX Design", "Firebase / Supabase", "State Management (Bloc/Redux)"],
+        "key_skills": ["Flutter & Dart", "React Native", "Kotlin (Android) / Swift (iOS)", "Mobile UI/UX Design", "Firebase / Supabase", "State Management"],
         "top_roles": ["Mobile App Developer", "iOS Engineer", "Android Engineer", "Cross-Platform Architect"],
-        "demand_index": "📱 Strong (86%)",
+        "demand_index": "Strong (86%)",
         "avg_salary": "$100,000 - $150,000 / yr",
         "sample_projects": [
             "Cross-Platform Habit & Fitness Tracker",
@@ -288,7 +246,7 @@ TRACK_METADATA = {
         "description": "Computer Vision Engineers train deep neural networks to process visual media like video streams and images for recognition, tracking, and spatial understanding.",
         "key_skills": ["PyTorch / TensorFlow", "OpenCV", "Convolutional Neural Networks (CNNs)", "YOLO & Object Detection", "Image Segmentation", "CUDA GPU Computing"],
         "top_roles": ["Computer Vision Engineer", "AI Research Scientist", "Deep Learning Engineer", "Autonomous Perception Dev"],
-        "demand_index": " Exponential (96%)",
+        "demand_index": "Exponential (96%)",
         "avg_salary": "$125,000 - $180,000 / yr",
         "sample_projects": [
             "Real-time Object Detection & Counter",
@@ -304,11 +262,6 @@ TRACK_METADATA = {
 # ----------------------
 
 def compute_scores(answers):
-    """
-    answers: dict of question_id -> int (1-5)
-    Returns: dict of track -> score
-    Rule-based scoring mechanism.
-    """
     scores = {
         "Data Science / ML": 0,
         "Web Development": 0,
@@ -316,31 +269,20 @@ def compute_scores(answers):
         "AI / Computer Vision": 0
     }
 
-    # Q1: Interest in math & statistics
     scores["Data Science / ML"] += answers["q1"] * 2
     scores["AI / Computer Vision"] += answers["q1"] * 1
 
-    # Q2: Interest in building websites
     scores["Web Development"] += answers["q2"] * 2
-
-    # Q3: Interest in mobile apps
     scores["App Development"] += answers["q3"] * 2
-
-    # Q4: Interest in working with data
     scores["Data Science / ML"] += answers["q4"] * 2
-
-    # Q5: Interest in AI / Computer Vision
     scores["AI / Computer Vision"] += answers["q5"] * 2
 
-    # Q6: Comfort with Python
     scores["Data Science / ML"] += answers["q6"] * 2
     scores["AI / Computer Vision"] += answers["q6"] * 1
     scores["Web Development"] += answers["q6"] * 1
 
-    # Q7: Comfort with frontend (HTML/CSS/JS)
     scores["Web Development"] += answers["q7"] * 2
 
-    # Q8: Time you can spend learning (motivation)
     scores["Data Science / ML"] += answers["q8"]
     scores["Web Development"] += answers["q8"]
     scores["App Development"] += answers["q8"]
@@ -352,7 +294,6 @@ def get_recommended_track(scores):
     return max(scores, key=scores.get)
 
 def compute_match_percentage(scores):
-    """Computes normalized percentage match per track."""
     percentages = {}
     for track, score in scores.items():
         max_possible = MAX_TRACK_SCORES.get(track, 30)
@@ -371,7 +312,7 @@ if "user_meta" not in st.session_state:
     st.session_state.user_meta = None
 
 # ----------------------
-# SIDEBAR NAVIGATION & DEV PROFILE
+# SIDEBAR NAVIGATION
 # ----------------------
 with st.sidebar:
     st.image("https://img.icons8.com/isometric/96/graduation-cap.png", width=70)
@@ -385,15 +326,11 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Developer Section in Sidebar
     st.markdown("### 👨‍💻 Developer Profile")
     st.markdown(f"**{DEV_NAME}**")
     st.markdown(
         f"""
         <a href="{DEV_GITHUB}" target="_blank" class="github-pill">
-            <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-            </svg>
             Follow on GitHub
         </a>
         """, 
@@ -411,7 +348,6 @@ with st.sidebar:
 # PAGE 1: HOME
 # ----------------------
 if page == "Home":
-    # Hero Banner
     st.markdown(f"""
         <div class="hero-banner">
             <div class="hero-title">🎓 Student Career Path Recommender</div>
@@ -419,12 +355,11 @@ if page == "Home":
                 An intelligent rule-based career guidance platform designed to match your skills, coding preferences, and technical curiosity with high-impact engineering specializations.
             </div>
             <a href="{DEV_GITHUB}" target="_blank" class="github-pill">
-                ⭐ Star on GitHub (Ravi)
+                ⭐ Star on GitHub ({DEV_NAME})
             </a>
         </div>
     """, unsafe_allow_html=True)
     
-    # Key Highlights Grid
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown("""
@@ -481,7 +416,7 @@ if page == "Home":
 # PAGE 2: QUESTIONNAIRE
 # ----------------------
 elif page == "Questionnaire":
-    st.markdown(f"""
+    st.markdown("""
         <div class="hero-banner" style="padding: 1.8rem 2.2rem;">
             <div class="hero-title" style="font-size: 2rem;">📝 Student Self-Assessment Questionnaire</div>
             <div class="hero-subtitle">
@@ -524,35 +459,27 @@ elif page == "Questionnaire":
             q6 = st.slider("Q6. I feel comfortable writing basic Python code.", 1, 5, 3)
             q8 = st.slider("Q8. I can spend at least 5–7 hours per week learning tech skills.", 1, 5, 3)
 
-        st.markdown(" ")
         submitted = st.form_submit_button("🚀 Submit & Calculate Recommendation", use_container_width=True)
 
     if submitted:
-        answers = {
-            "q1": q1,
-            "q2": q2,
-            "q3": q3,
-            "q4": q4,
-            "q5": q5,
-            "q6": q6,
-            "q7": q7,
-            "q8": q8
+        st.session_state.answers = {
+            "q1": q1, "q2": q2, "q3": q3, "q4": q4,
+            "q5": q5, "q6": q6, "q7": q7, "q8": q8
         }
-        st.session_state.answers = answers
         st.session_state.user_meta = {
             "name": name,
             "year": year,
             "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
-        st.success("🎉 Assessment submitted successfully! Redirecting to your results...")
+        st.success("🎉 Assessment submitted successfully! Navigate to 'Results & Insights' in the sidebar.")
         st.balloons()
 
 # ----------------------
 # PAGE 3: RESULTS & INSIGHTS
 # ----------------------
 elif page == "Results & Insights":
-    st.markdown(f"""
+    st.markdown("""
         <div class="hero-banner" style="padding: 1.8rem 2.2rem;">
             <div class="hero-title" style="font-size: 2rem;">📊 Assessment Results & Career Insights</div>
             <div class="hero-subtitle">
@@ -563,17 +490,15 @@ elif page == "Results & Insights":
 
     if st.session_state.answers is None:
         st.warning("⚠️ No assessment data found. Please complete the questionnaire first.")
-        st.info("Use the sidebar or click below to fill out the questionnaire.")
+        st.info("Select **Questionnaire** in the sidebar navigation to begin.")
     else:
         answers = st.session_state.answers
         scores = compute_scores(answers)
         match_percentages = compute_match_percentage(scores)
         recommended_track = get_recommended_track(scores)
         rec_meta = TRACK_METADATA.get(recommended_track, TRACK_METADATA["Data Science / ML"])
-
-        # Candidate Header Summary
         meta = st.session_state.user_meta or {"name": "Anonymous", "year": "Not specified", "timestamp": "N/A"}
-        
+
         c_m1, c_m2, c_m3, c_m4 = st.columns(4)
         with c_m1:
             st.markdown(f"""
@@ -613,8 +538,8 @@ elif page == "Results & Insights":
             <div style="font-size: 2.2rem; font-weight: 800; color: #F8FAFC; margin: 4px 0;">{rec_meta['icon']} {recommended_track}</div>
             <div style="font-size: 1.05rem; color: #CBD5E1; margin-bottom: 0.8rem;">{rec_meta['tagline']}</div>
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #6EE7B7; border-color: rgba(16, 185, 129, 0.4);">Demand: {rec_meta['demand_index']}</span>
-                <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #93C5FD; border-color: rgba(59, 130, 246, 0.4);">Est. Salary: {rec_meta['avg_salary']}</span>
+                <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #6EE7B7;">Demand: {rec_meta['demand_index']}</span>
+                <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #93C5FD;">Est. Salary: {rec_meta['avg_salary']}</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -681,18 +606,14 @@ elif page == "Results & Insights":
 
         st.markdown("---")
 
-        # Deep Dive: Why this Track & Skill Requirements
-        st.markdown("### 💡 Comprehensive Career Breakdown")
-        
         c_dd1, c_dd2 = st.columns(2)
 
         with c_dd1:
             st.markdown("#### 🎯 Why This Track Fits You")
-            reasons = TRACKS.get(recommended_track, [])
-            for r in reasons:
+            for r in TRACKS.get(recommended_track, []):
                 st.markdown(f"✔ **{r}**")
 
-            st.markdown("#### 👔 Potential Job Titles")
+            st.markdown("#### 💼 Potential Job Titles")
             for role in rec_meta["top_roles"]:
                 st.markdown(f"💼 `{role}`")
 
@@ -707,7 +628,6 @@ elif page == "Results & Insights":
 
         st.markdown("---")
 
-        # Step-by-Step Learning Roadmap
         st.markdown("### 🗺️ Step-by-Step Action Roadmap")
 
         if recommended_track == "Data Science / ML":
@@ -753,13 +673,10 @@ elif page == "Results & Insights":
 
         st.markdown("---")
 
-        # Developer Credit Card & Export Actions
         c_exp1, c_exp2 = st.columns([1.2, 0.8])
 
         with c_exp1:
             st.markdown("### 📥 Download & Save Report")
-            st.write("Save your assessment results locally as JSON or CSV.")
-            
             report_dict = {
                 "candidate": meta['name'],
                 "academic_level": meta['year'],
@@ -796,13 +713,7 @@ elif page == "Results & Insights":
                 <div style="font-weight: 700; font-size: 1.1rem; color: #F8FAFC;">{DEV_NAME}</div>
                 <p style="color: #94A3B8; font-size: 0.88rem; margin: 6px 0 12px 0;">Open Source Developer & AI Explorer</p>
                 <a href="{DEV_GITHUB}" target="_blank" class="github-pill" style="justify-content: center; width: 100%;">
-                    <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-                    </svg>
-                    Ravi
+                    GitHub Profile
                 </a>
             </div>
             """, unsafe_allow_html=True)
-
-# ----------------------
-
