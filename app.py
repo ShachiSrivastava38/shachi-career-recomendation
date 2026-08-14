@@ -18,7 +18,7 @@ st.set_page_config(
 
 # Developer Profile
 DEV_GITHUB = "https://github.com/coderravi0101"
-DEV_NAME = "Ravi Kumar Singh"
+DEV_NAME = "Shachi Srivastava"
 
 # ----------------------
 # ADVANCED CUSTOM CSS FOR PREMIUM UI/UX
