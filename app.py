@@ -17,7 +17,7 @@ st.set_page_config(
 )
 
 # Developer Profile
-DEV_GITHUB = "https://github.com/coderravi0101"
+DEV_GITHUB = "https://github.com/ShachiSrivastava38"
 DEV_NAME = "Shachi Srivastava"
 
 # ----------------------
